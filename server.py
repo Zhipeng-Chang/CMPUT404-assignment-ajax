@@ -22,7 +22,7 @@
 
 
 import flask
-from flask import Flask, request
+from flask import Flask, request, redirect,jsonify
 import json
 app = Flask(__name__)
 app.debug = True
@@ -74,27 +74,47 @@ def flask_post_json():
 @app.route("/")
 def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
-    return None
+    return redirect("/static/index.html")
 
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface'''
-    return None
+# Reference: https://stackoverflow.com/questions/26660654/how-do-i-print-the-key-value-pairs-of-a-dictionary-in-python answered Oct 30 '14 at 18:33 by chepner
+# https://stackoverflow.com/questions/45412228/flask-sending-data-and-status-code-through-a-response-object answered Jul 31 '17 at 9:51 by Nabin
+
+    try:
+        for key, value in flask_post_json().items():
+            myWorld.update(entity, key, value)
+        new_data = myWorld.get(entity)
+        return jsonify(new_data), 200
+    except Exception as e:
+        respons = {"success":False, "message":str(e)}
+        return jsonify(respons), 400
+
+
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    return None
+    new_data = myWorld.world()
+    return jsonify(new_data), 200
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return None
+    new_data = myWorld.get(entity)
+    return jsonify(new_data), 200
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
-    return None
+    try:
+        myWorld.clear()
+        respons = {"success":True}
+        return jsonify(respons), 200
+    except Exception as e:
+        respons = {"success":False, "message":str(e)}
+        return jsonify(respons), 400
 
 if __name__ == "__main__":
     app.run()
