@@ -91,8 +91,6 @@ def update(entity):
         respons = {"success":False, "message":str(e)}
         return jsonify(respons), 400
 
-
-
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
@@ -110,8 +108,8 @@ def clear():
     '''Clear the world out!'''
     try:
         myWorld.clear()
-        respons = {"success":True}
-        return jsonify(respons), 200
+        new_data = myWorld.world()
+        return jsonify(new_data), 200
     except Exception as e:
         respons = {"success":False, "message":str(e)}
         return jsonify(respons), 400
