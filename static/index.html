@@ -22,8 +22,8 @@
     "/>
     <script src="json2.js"></script>
   </head> 
-  <body bgcolor="black" height="100%" width="100%"> 
-    <canvas id="c" width="100%" height="100%" style="-webkit-tap-highlight-color: transparent;"></canvas> 
+  <body bgcolor="white" height="100%" width="100%"> 
+    <canvas id="c" width="100%" height="100%" style=" -webkit-tap-highlight-color: transparent;"></canvas> 
     <script>
 var canvas = document.getElementById('c');
 var host = window.location.host;
@@ -119,7 +119,7 @@ function prepEntity(entity) {
         entity["colour"] = getRandomColor();
     }
     if (!entity["radius"]) {
-        entity["radius"] = 30;
+        entity["radius"] = 15;
     }
     return entity;
 }
@@ -127,7 +127,7 @@ function prepEntity(entity) {
 function clearFrame() {
     with(context) {
 	moveTo(0,0);
-	fillStyle = "#000";
+	fillStyle = "white";
 	fillRect(0,0,W,H);
     }
 
@@ -306,7 +306,7 @@ mouse.mouseuppers.push(function(x,y,clicked,e) {
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
     addEntityWithoutName({'x':x,'y':y,'colour':'green',
-                          'radius':30});
+                          'radius':5});
 });
 
 function get_world_callback(new_world){
