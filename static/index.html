@@ -6,7 +6,7 @@
     <meta content='width=device-width; height=device-height; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />
     <meta name="viewport" content="width=device-width" />
     <meta name="license" content="
-        Copyright 2013 Abram Hindle
+        Copyright 2019 Abram Hindle, Zhipeng Chang
         
         Licensed under the Apache License, Version 2.0 (the "License");
         you may not use this file except in compliance with the License.
@@ -66,8 +66,37 @@ function sendJSONXMLHTTPRequest(url, objects, callback) {
     }
 }
 
+// Reference: https://appdividend.com/2018/08/20/javascript-fetch-api-example-tutorial/ By Krunal  Last updated Nov 1, 2018
+// Reference: https://stackoverflow.com/questions/43903767/read-the-body-of-a-fetch-promise answered May 11 '17 at 0:31 by quicklikerabbit
+function sendJSONFetchHTTPRequest(url, objects, callback) {
+    if (objects == null){
+        return fetch(url).then(res => res.json()).then(body => callback(body));
+    }
+    else if (objects != null){
+          return fetch(url, {
+            method: 'POST', 
+            body: JSON.stringify(objects),
+            headers: new Headers({
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            }),
+          });
+    }
+}
 
 world = {};
+
+// https://stackoverflow.com/questions/1484506/random-color-generator
+
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
+
 
 //XXX: TODO Make this prettier!
 function drawCircle(context,entity) {
@@ -77,19 +106,20 @@ function drawCircle(context,entity) {
         var x = entity["x"];
         var y = entity["y"];
         //moveTo(x,y);
-        fillStyle = entity["colour"];
+        fillStyle = getRandomColor();
         strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:50, 0, 2.0 * Math.PI, false);  
-        stroke();                                
+        arc(x, y, (entity["radius"])?entity["radius"]:50,0, 2 * Math.PI, false);  
+        stroke();  
+
     }
 }
 
 function prepEntity(entity) {
     if (!entity["colour"]) {
-        entity["colour"] = "#FF0000";
+        entity["colour"] = getRandomColor();
     }
     if (!entity["radius"]) {
-        entity["radius"] = 50;
+        entity["radius"] = 30;
     }
     return entity;
 }
@@ -157,7 +187,7 @@ function addEntity(entity, data) {
     var url = '/entity/' + entity; // update the newest entity
     var objects = world[entity];
     var callback = do_nothing_callback;
-    sendJSONXMLHTTPRequest(url, objects, callback);
+    sendJSONFetchHTTPRequest(url, objects, callback);
 
 }
 
@@ -276,7 +306,7 @@ mouse.mouseuppers.push(function(x,y,clicked,e) {
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
     addEntityWithoutName({'x':x,'y':y,'colour':'green',
-                          'radius':10});
+                          'radius':30});
 });
 
 function get_world_callback(new_world){
@@ -289,7 +319,7 @@ function update() {
     var url = '/world'; // keep requesting the new World and update it 
     var objects = null;
     var callback = get_world_callback;
-    sendJSONXMLHTTPRequest(url, objects, callback);
+    sendJSONFetchHTTPRequest(url, objects, callback);
     drawFrame();
 
 }
