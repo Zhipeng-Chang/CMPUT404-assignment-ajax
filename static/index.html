@@ -109,6 +109,7 @@ function drawCircle(context,entity) {
         fillStyle = getRandomColor();
         strokeStyle = fillStyle;
         arc(x, y, (entity["radius"])?entity["radius"]:50,0, 2 * Math.PI, false);  
+        fill(); // Reference: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/stroke#Stroking_and_filling
         stroke();  
 
     }
@@ -297,16 +298,15 @@ mouse = (function() {
 // Add the application specific mouse listeners!
 //XXX: TODO Make these prettier!
 mouse.mousedowners.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'blue'});
+    addEntityWithoutName({'x':x,'y':y});
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'red'});
+    addEntityWithoutName({'x':x,'y':y});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'green',
-                          'radius':5});
+    addEntityWithoutName({'x':x,'y':y,'radius':5});
 });
 
 function get_world_callback(new_world){
